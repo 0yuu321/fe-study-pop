@@ -1,4 +1,4 @@
-@import './components/GameMode.css';
+
 
 .app-container {
   display: flex;
@@ -67,7 +67,7 @@ h1 {
 }
 
 /* Results Screen */
-.results-container {
+/* .results-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -78,6 +78,26 @@ h1 {
   width: 100%;
   max-width: 800px;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+} */
+
+/* 結果画面の中央寄せ（これで左寄り解消） */
+.results-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;     /* 横中央 */
+  justify-content: center; /* 縦中央っぽく */
+  text-align: center;      /* 文字も中央 */
+  margin: 0 auto;
+
+  width: fit-content;           /* 中身に合わせる（横に伸びない） */
+  max-width: 90vw;              /* 画面外防止 */
+  padding: 28px 32px;
+
+  background: rgba(255, 255, 255, 0.10); /* 少し明るい */
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
 }
 
 .final-score {
@@ -263,4 +283,31 @@ h1 {
 
 footer {
   margin-top: 1rem;
+}
+
+/* =========================
+   Othello（最初の画面だけ間を詰める）
+   ========================= */
+
+/* ここは OthelloGame.tsx の一番外側に付いてるクラス名に合わせて変えてOK
+   例： <div className="othello-screen"> ... </div>
+*/
+.othello-screen {
+  width: 100%;
+}
+
+/* app-container の gap が効きすぎる問題を、オセロ画面内だけ上書き */
+.othello-screen .app-container {
+  gap: 1rem; /* ← 2rem が広すぎるので縮める（0.8〜1.2remで調整） */
+}
+
+/* タイトル周りがさらに空いてる場合の保険 */
+.othello-screen header {
+  gap: 0.6rem;
+}
+
+.mode-btn:focus,
+.mode-btn:focus-visible {
+  outline: none;
+  box-shadow: none;
 }

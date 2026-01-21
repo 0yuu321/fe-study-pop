@@ -5,7 +5,8 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #0f172a; /* Slate 900 */
+  background-color: #0f172a;
+  /* Slate 900 */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,7 +16,8 @@
   /* Premium Colors */
   --color-bg-primary: #0f172a;
   --color-bg-secondary: #1e293b;
-  --color-accent: #4ade80; /* Neon Green */
+  --color-accent: #4ade80;
+  /* Neon Green */
   --color-accent-glow: rgba(74, 222, 128, 0.5);
   --color-danger: #ef4444;
   --color-text-main: #f8fafc;
@@ -43,7 +45,9 @@ body {
   background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: var(--color-text-main);
 }
 
@@ -72,8 +76,8 @@ button:focus-visible {
 }
 
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   text-align: center;
 }

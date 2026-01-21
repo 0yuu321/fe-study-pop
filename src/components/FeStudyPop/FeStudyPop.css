@@ -1,0 +1,458 @@
+.fe-study-pop {
+    /* ====== THEME（統一） ====== */
+    /* ✅ 背景：光沢（グラデ/放射）を全部やめて単色に */
+    --bg: #3f3a4a; /* 紫が入ったグレー（好みで変えてOK） */
+
+    /* ✅ カード：ガラス（rgba）をやめて単色に */
+    --card: #4a465c;
+
+    /* 文字 */
+    --ink: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.68);
+
+    /* 枠線 */
+    --line: rgba(255, 255, 255, 0.12);
+
+    /* メイン色 */
+    --accent: #3b82f6;
+
+    /* 正解/不正解 */
+    --ok: #22c55e;
+    --ng: #ef4444;
+
+    /* チップ */
+    --chip: rgba(168, 120, 255, 0.18);
+
+    --shadow: 0 18px 50px rgba(0, 0, 0, .35);
+    --radius: 18px;
+
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    text-align: left;
+
+    /* ✅ 光沢の原因：ここを消す */
+    backdrop-filter: none;
+}
+
+.fe-study-pop * {
+    box-sizing: border-box;
+}
+
+/* ====== LAYOUT ====== */
+.fe-study-pop .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.fe-study-pop header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 8px 2px 14px;
+}
+
+/* タイトル */
+.fe-study-pop .brand {
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: .5px;
+    color: var(--ink);
+}
+
+.fe-study-pop .tag {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.fe-study-pop nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ====== NAV BUTTON ====== */
+.fe-study-pop .navbtn {
+    border: 1px solid var(--line);
+    background: #5a5668; /* ✅ 半透明やめて単色 */
+    color: var(--ink);
+    padding: 10px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: none;
+    backdrop-filter: none; /* ✅ */
+}
+
+.fe-study-pop .navbtn.active {
+    border-color: rgba(59, 130, 246, .55);
+    background: rgba(59, 130, 246, .25);
+}
+
+/* ====== CARD ====== */
+.fe-study-pop .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    margin-top: 12px;
+
+    /* ✅ 光沢の原因：ここを消す */
+    backdrop-filter: none;
+}
+
+/* 2カラム */
+.fe-study-pop .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 860px) {
+    .fe-study-pop .grid2 {
+        grid-template-columns: 1fr;
+    }
+
+    .fe-study-pop header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+.fe-study-pop .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ====== PILL ====== */
+.fe-study-pop .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+
+    /* ✅ 半透明やめて単色 */
+    background: #5a5668;
+
+    font-size: 14px;
+    color: var(--ink);
+
+    /* ✅ 光沢の原因：ここを消す */
+    backdrop-filter: none;
+}
+
+.fe-study-pop .pill b {
+    font-weight: 800;
+}
+
+/* ====== BUTTON ====== */
+.fe-study-pop .btn {
+    border: 1px solid rgba(59, 130, 246, .45);
+    background: rgba(59, 130, 246, .18);
+    color: var(--ink);
+    padding: 10px 12px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.fe-study-pop .btn.primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.fe-study-pop .btn.ghost {
+    background: #5a5668; /* ✅ 単色 */
+    border-color: var(--line);
+    color: var(--ink);
+}
+
+.fe-study-pop .btn.danger {
+    background: rgba(239, 68, 68, .22);
+    border-color: rgba(239, 68, 68, .55);
+    color: #fff;
+}
+
+.fe-study-pop .btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ====== TEXT ====== */
+.fe-study-pop .h1 {
+    font-size: 22px;
+    font-weight: 850;
+    margin: 0 0 6px;
+}
+
+.fe-study-pop .muted {
+    color: var(--muted);
+}
+
+.fe-study-pop .small {
+    font-size: 13px;
+}
+
+.fe-study-pop .q {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 14px 0 8px;
+}
+
+/* ====== CHOICES ====== */
+.fe-study-pop .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+@media (max-width: 640px) {
+    .fe-study-pop .choices {
+        grid-template-columns: 1fr;
+    }
+}
+
+.fe-study-pop .choice {
+    text-align: left;
+
+    /* ✅ 半透明やめて単色 */
+    background: #5a5668;
+
+    color: var(--ink);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 15px;
+
+    /* ✅ 光沢の原因：ここを消す */
+    backdrop-filter: none;
+}
+
+.fe-study-pop .choice:hover {
+    background: rgba(59, 130, 246, .18);
+    border-color: rgba(59, 130, 246, .45);
+}
+
+.fe-study-pop .choice.ok {
+    border-color: rgba(34, 197, 94, .55);
+    background: rgba(34, 197, 94, .18);
+}
+
+.fe-study-pop .choice.ng {
+    border-color: rgba(239, 68, 68, .60);
+    background: rgba(239, 68, 68, .18);
+}
+
+/* ====== DIVIDER ====== */
+.fe-study-pop .divider {
+    height: 1px;
+    background: var(--line);
+    margin: 12px 0;
+}
+
+/* ====== INPUTS ====== */
+.fe-study-pop textarea,
+.fe-study-pop input,
+.fe-study-pop select {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 14px;
+
+    /* ✅ 半透明やめて単色 */
+    background: #5a5668;
+
+    color: var(--ink);
+    margin-bottom: 8px;
+
+    /* ✅ 光沢の原因：ここを消す */
+    backdrop-filter: none;
+}
+
+/* ✅ 解説＆覚え方（全体のtextarea） */
+.fe-study-pop textarea {
+    background: #5f5b6d; /* 少し明るく */
+    min-height: 90px;
+    resize: vertical;
+}
+
+.fe-study-pop label {
+    font-size: 13px;
+    color: var(--muted);
+    display: block;
+    margin: 10px 0 6px;
+}
+
+/* ====== TABLE ====== */
+.fe-study-pop .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 17px;
+}
+
+.fe-study-pop .table th,
+.fe-study-pop .table td {
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    color: var(--ink);
+}
+
+.fe-study-pop .right {
+    text-align: right;
+}
+
+/* ====== CHIP ====== */
+.fe-study-pop .chip {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--chip);
+    border: 1px solid rgba(168, 120, 255, .35);
+    font-size: 14px;
+    color: var(--ink);
+}
+
+/* ====== TOAST ====== */
+.fe-study-pop .toast {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+
+    /* ✅ 単色 */
+    background: #5a5668;
+
+    color: var(--ink);
+    backdrop-filter: none; /* ✅ */
+}
+
+.fe-study-pop .toast.ok {
+    border-color: rgba(34, 197, 94, .45);
+    background: rgba(34, 197, 94, .18);
+}
+
+.fe-study-pop .toast.ng {
+    border-color: rgba(239, 68, 68, .45);
+    background: rgba(239, 68, 68, .18);
+}
+
+/* Back Button */
+.fe-study-pop .app-back-btn {
+    background: #5a5668; /* ✅ */
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 5px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 0;
+    align-self: flex-end;
+    backdrop-filter: none; /* ✅ */
+}
+
+/* フォーカス時（textarea） */
+.fe-study-pop textarea:focus {
+    outline: none;
+    border-color: rgba(167, 139, 250, 0.7);
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
+}
+
+.fe-study-pop textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* ===============================
+   自分メモ（NOTES画面）用
+   =============================== */
+.fe-study-pop .note-item textarea,
+.fe-study-pop .note-item input {
+    background: rgba(245, 247, 250, 0.95) !important;
+    color: #111827 !important;
+    border: 1px solid rgba(0, 0, 0, 0.14) !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.fe-study-pop .note-item textarea:focus,
+.fe-study-pop .note-item input:focus {
+    outline: none;
+    background: rgba(245, 247, 250, 1);
+    border-color: rgba(167, 139, 250, 0.65);
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
+}
+
+.fe-study-pop .note-item textarea::placeholder {
+    color: rgba(17, 24, 39, 0.55) !important;
+}
+
+/* ===== 復習箱カテゴリselect：サイズ＆見た目 ===== */
+.review-category-select {
+    width: auto;
+    max-width: 260px;
+    min-width: 180px;
+    display: inline-block;
+
+    background: #5a5668; /* ✅ 単色 */
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* ✅ 開いた中（option）の背景と文字色 */
+.review-category-select option {
+    background: #5a5668; /* ✅ 見える単色 */
+    color: #ffffff;
+}
+
+/* ✅ 黒い枠（フォーカス輪郭）消したい場合 */
+.review-category-select:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* ===============================
+   自分メモ（NOTES画面）を全体テーマに合わせる
+   =============================== */
+
+/* 自分メモの textarea / input を紫グレーに統一 */
+.fe-study-pop .note-item textarea,
+.fe-study-pop .note-item input {
+  background: #0000001c !important;   /* メモの背景の */
+  color: rgba(10, 10, 10, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;/* メモの色 */
+  box-shadow: none !important;
+}
+
+/* フォーカス時（黒い枠・白発光を消す） */
+.fe-study-pop .note-item textarea:focus,
+.fe-study-pop .note-item input:focus {
+  outline: none;
+  border-color: rgba(167, 139, 250, 0.7);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
+  background: #666279 !important;
+}
+
+.fe-study-pop .note-item textarea {
+  font-size:14px;    /* ← ここ */
+  line-height: 1.7;       /* ← かなり重要（読みやすさUP） */
+}
+
+/* ====== BADGE（復習箱のカテゴリ表示） ====== */
+.fe-study-pop .badge {
+  font-size: 14px;          /* ← ここで文字サイズ */
+  padding: 6px 10px;        /* ← バッジの大きさ */
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
