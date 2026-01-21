@@ -38,6 +38,9 @@ const BGM_VOL_QUIZ = 0.12;
 const WIN_VOL = 0.8;
 const LOSE_VOL = 0.8;
 
+// ✅ GitHub Pages対応：/fe-study-pop/ を自動で付ける
+const soundUrl = (file: string) => `${import.meta.env.BASE_URL}sounds/${file}`;
+
 export default function OthelloGame({ onBack }: OthelloGameProps) {
   // Game Mode State ('start' | 'playing')
   const [gameState, setGameState] = useState<'start' | 'playing'>('start');
@@ -45,9 +48,7 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
 
   const [board, setBoard] = useState<BoardState>(createInitialBoard());
   const [currentPlayer, setCurrentPlayer] = useState<Player>(1);
-  const [validMoves, setValidMoves] = useState<boolean[][]>(() =>
-    getValidMoves(createInitialBoard(), 1)
-  );
+  const [validMoves, setValidMoves] = useState<boolean[][]>(() => getValidMoves(createInitialBoard(), 1));
   const [scores, setScores] = useState({ black: 2, white: 2 });
   const [isGameOver, setIsGameOver] = useState(false);
   const [winner, setWinner] = useState<Player | 0 | 'draw'>(0);
@@ -74,23 +75,20 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
   // 初回だけ生成
   useEffect(() => {
     if (!bgmRef.current) {
-      const bgm = new Audio(
-        '${import.meta.env.BASE_URL}/sounds/BGM.mp3');
+      const bgm = new Audio(soundUrl('BGM.mp3'));
       bgm.loop = true;
       bgm.volume = BGM_VOL_NORMAL;
       bgmRef.current = bgm;
     }
 
     if (!winSERef.current) {
-      const win = new Audio(
-        '${import.meta.env.BASE_URL}sounds/win.mp3');
+      const win = new Audio(soundUrl('win.mp3'));
       win.volume = WIN_VOL;
       winSERef.current = win;
     }
 
     if (!loseSERef.current) {
-      const lose = new Audio(
-        '${import.meta.env.BASE_URL}/sounds/lose.mp3');
+      const lose = new Audio(soundUrl('lose.mp3'));
       lose.volume = LOSE_VOL;
       loseSERef.current = lose;
     }
@@ -201,7 +199,7 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
     }, 1000 + Math.random() * 500);
 
     return () => clearTimeout(timer);
-  }, [currentPlayer, isGameOver, board, gameMode, gameState]);
+  }, [currentPlayer, isGameOver, board, gameMode, gameState, isAiThinking]);
 
   // パス判定 / ゲーム終了判定
   useEffect(() => {
@@ -325,102 +323,97 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
   };
 
   // --------------------
-// start画面（修正版）
-// --------------------
-if (gameState === 'start') {
-  return (
-    <div className="othello-game-container">
-      <header className="game-header">
-        <button className="back-button" onClick={onBack}>
-          メニュー
-        </button>
-        <h1>FE Exam Othello</h1>
-      </header>
+  // start画面（修正版）
+  // --------------------
+  if (gameState === 'start') {
+    return (
+      <div className="othello-game-container">
+        <header className="game-header">
+          <button className="back-button" onClick={onBack}>
+            メニュー
+          </button>
+          <h1>FE Exam Othello</h1>
+        </header>
 
-      <main
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 32,          // ← 余白はこれだけで管理
-          marginTop: 24,    // ← タイトル直下から少しだけ下げる
-        }}
-      >
-        <h2 style={{ margin: 0 }}>対戦モード選択</h2>
-
-        <div
+        <main
           style={{
             display: 'flex',
-            flexDirection: 'row',
-            WebkitJustifyContent: 'center',
-            // alignItems: 'Center',
-            gap: 20,
-            width: 'min(469px, 120vw)',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 32,
+            marginTop: 24,
           }}
         >
+          <h2 style={{ margin: 0 }}>対戦モード選択</h2>
 
-          <button
-            className={`mode-btn ${gameMode === 'cpu' ? 'selected-mode' : ''}`}
-            onClick={() => setGameMode('cpu')}
+          <div
             style={{
-              width: '100%',
-              maxWidth: 270,
-              padding: '14px 40px',
-              fontSize: '1.2rem',
-              cursor: 'pointer',
-              border: gameMode === 'cpu' ? '3px solid #4CAF50' : '1px solid #ccc',
-              borderRadius: 8,
-              background: gameMode === 'cpu' ? '#e8f5e9' : 'white',
-              color: '#333',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              gap: 20,
+              width: 'min(520px, 92vw)', // ✅ ここは良い値。必要なら520→560とかに上げてOK
             }}
           >
-            CPU対戦
-            <div style={{ fontSize: '0.9rem', marginTop: 8, color: '#666'}}>
-              コンピュータと対戦します
-            </div>
-          </button>
+            <button
+              className={`mode-btn ${gameMode === 'cpu' ? 'selected-mode' : ''}`}
+              onClick={() => setGameMode('cpu')}
+              style={{
+                width: '100%',
+                maxWidth: 270,
+                padding: '14px 40px',
+                fontSize: '1.2rem',
+                cursor: 'pointer',
+                border: gameMode === 'cpu' ? '3px solid #4CAF50' : '1px solid #ccc',
+                borderRadius: 8,
+                background: gameMode === 'cpu' ? '#e8f5e9' : 'white',
+                color: '#333',
+              }}
+            >
+              CPU対戦
+              <div style={{ fontSize: '0.9rem', marginTop: 8, color: '#666' }}>コンピュータと対戦します</div>
+            </button>
+
+            <button
+              className={`mode-btn ${gameMode === '2p' ? 'selected-mode' : ''}`}
+              onClick={() => setGameMode('2p')}
+              style={{
+                width: '100%',
+                maxWidth: 270,
+                padding: '14px 24px',
+                fontSize: '1.2rem',
+                cursor: 'pointer',
+                border: gameMode === '2p' ? '3px solid #2196F3' : '1px solid #ccc',
+                borderRadius: 8,
+                background: gameMode === '2p' ? '#e3f2fd' : 'white',
+                color: '#333',
+              }}
+            >
+              2人対戦
+              <div style={{ fontSize: '0.9rem', marginTop: 8, color: '#666', width: '100%' }}>
+                同じ端末で2人で対戦します
+              </div>
+            </button>
+          </div>
 
           <button
-            className={`mode-btn ${gameMode === '2p' ? 'selected-mode' : ''}`}
-            onClick={() => setGameMode('2p')}
+            onClick={startGame}
             style={{
-              width: '100%',
-              maxWidth: 270,
-              padding: '14px 24px',
-              fontSize: '1.2rem',
+              padding: '12px 60px',
+              fontSize: '1.5rem',
+              background: '#333',
+              color: 'white',
+              border: 'none',
+              borderRadius: 30,
               cursor: 'pointer',
-              border: gameMode === '2p' ? '3px solid #2196F3' : '1px solid #ccc',
-              borderRadius: 8,
-              background: gameMode === '2p' ? '#e3f2fd' : 'white',
-              color: '#333',
             }}
           >
-            2人対戦
-            <div style={{ fontSize: '0.9rem', marginTop: 8, color: '#666', width: '100%'}}>
-              同じ端末で2人で対戦します
-            </div>
+            GAME START
           </button>
-        </div>
-
-        <button
-          onClick={startGame}
-          style={{
-            padding: '12px 60px',
-            fontSize: '1.5rem',
-            background: '#333',
-            color: 'white',
-            border: 'none',
-            borderRadius: 30,
-            cursor: 'pointer',
-          }}
-        >
-          GAME START
-        </button>
-      </main>
-    </div>
-  );
-}
-
+        </main>
+      </div>
+    );
+  }
 
   const headerLeft = isGameOver ? (
     <div style={{ width: 1 }} />
