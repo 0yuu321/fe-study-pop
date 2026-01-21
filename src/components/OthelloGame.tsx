@@ -38,6 +38,9 @@ const BGM_VOL_QUIZ = 0.12;
 const WIN_VOL = 0.8;
 const LOSE_VOL = 0.8;
 
+// 🔊 クイズ正誤SE音量
+const QUIZ_SE_VOL = 0.8;
+
 // ✅ GitHub Pages対応：/fe-study-pop/ を自動で付ける
 const soundUrl = (file: string) => `${import.meta.env.BASE_URL}sounds/${file}`;
 
@@ -72,6 +75,12 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
   const winSERef = useRef<HTMLAudioElement | null>(null);
   const loseSERef = useRef<HTMLAudioElement | null>(null);
 
+  // --------------------
+  // ✅ クイズSE（correct/wrong）
+  // --------------------
+  const correctSERef = useRef<HTMLAudioElement | null>(null);
+  const wrongSERef = useRef<HTMLAudioElement | null>(null);
+
   // 初回だけ生成
   useEffect(() => {
     if (!bgmRef.current) {
@@ -92,7 +101,29 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
       lose.volume = LOSE_VOL;
       loseSERef.current = lose;
     }
+
+    // ✅ クイズ正誤SE
+    if (!correctSERef.current) {
+      const a = new Audio(soundUrl('correct.mp3'));
+      a.volume = QUIZ_SE_VOL;
+      correctSERef.current = a;
+    }
+    if (!wrongSERef.current) {
+      const a = new Audio(soundUrl('wrong.mp3'));
+      a.volume = QUIZ_SE_VOL;
+      wrongSERef.current = a;
+    }
   }, []);
+
+  const playQuizSE = (isCorrect: boolean) => {
+    if (isMuted) return;
+    const a = isCorrect ? correctSERef.current : wrongSERef.current;
+    if (!a) return;
+    try {
+      a.currentTime = 0;
+      void a.play();
+    } catch {}
+  };
 
   // ✅ 再生/停止と音量制御（クイズ中は小さく）
   useEffect(() => {
@@ -158,7 +189,6 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
           a.play().catch(() => {});
         }
       }
-      // drawは何もしない
     }
   }, [isGameOver, winner, gameMode, isMuted]);
 
@@ -169,18 +199,23 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
   }, [board, currentPlayer]);
 
   // --------------------
-  // AI Turn Logic
+  // ✅ AI Turn Logic（改善版：isAiThinkingを依存配列に入れない）
   // --------------------
   useEffect(() => {
     if (gameState !== 'playing') return;
     if (gameMode !== 'cpu') return;
-    if (currentPlayer !== 2 || isGameOver) return;
+    if (currentPlayer !== 2) return;
+    if (isGameOver) return;
+
+    // もう思考中なら二重発火させない
     if (isAiThinking) return;
+
+    // 置けないならパス判定側に任せる
     if (!hasValidMoves(board, 2)) return;
 
     setIsAiThinking(true);
 
-    const timer = setTimeout(() => {
+    const timer = window.setTimeout(() => {
       try {
         const bestMove = getBestMove(board, 2);
         if (bestMove) {
@@ -196,10 +231,13 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
       } finally {
         setIsAiThinking(false);
       }
-    }, 1000 + Math.random() * 500);
+    }, 800);
 
-    return () => clearTimeout(timer);
-  }, [currentPlayer, isGameOver, board, gameMode, gameState, isAiThinking]);
+    return () => window.clearTimeout(timer);
+
+    // ✅ ここが重要：isAiThinking は依存に入れない（入れるとタイマーが消える）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [board, currentPlayer, gameMode, gameState, isGameOver]);
 
   // パス判定 / ゲーム終了判定
   useEffect(() => {
@@ -247,11 +285,14 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
     const question = getRandomQuestion();
     setCurrentQuestion(question);
     setPendingMove({ r, c });
-    setModalOpen(true); // クイズ中はBGM小さくなる
+    setModalOpen(true);
   };
 
   // クイズ回答後
   const handleQuizAnswer = (isCorrect: boolean) => {
+    // ✅ ここでSE鳴らす（クリック直後なのでブラウザ的にも安全）
+    playQuizSE(isCorrect);
+
     setModalOpen(false);
 
     if (!isCorrect && currentQuestion) {
@@ -323,7 +364,7 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
   };
 
   // --------------------
-  // start画面（修正版）
+  // start画面
   // --------------------
   if (gameState === 'start') {
     return (
@@ -352,7 +393,7 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
               flexDirection: 'row',
               justifyContent: 'center',
               gap: 20,
-              width: 'min(520px, 92vw)', // ✅ ここは良い値。必要なら520→560とかに上げてOK
+              width: 'min(520px, 92vw)',
             }}
           >
             <button
@@ -478,15 +519,7 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
             </div>
           </div>
 
-          <div
-            className="actions"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: 12,
-              marginTop: 16,
-            }}
-          >
+          <div className="actions" style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 16 }}>
             <button onClick={startGame} className="primary-btn">
               同じモードで再戦
             </button>
