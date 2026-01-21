@@ -40,7 +40,9 @@ const addToReviewBox = (questionId: string) => {
 // --------------------
 const playSfx = (file: 'correct.mp3' | 'wrong.mp3') => {
   try {
-    const audio = new Audio(`/sounds/${file}`);
+    const audio = new Audio(
+      `${import.meta.env.BASE_URL}/sounds/${file}`
+    );
     audio.volume = 0.8;
     audio.currentTime = 0;
     void audio.play();

@@ -74,20 +74,23 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
   // 初回だけ生成
   useEffect(() => {
     if (!bgmRef.current) {
-      const bgm = new Audio('/sounds/BGM.mp3');
+      const bgm = new Audio(
+        '${import.meta.env.BASE_URL}/sounds/BGM.mp3');
       bgm.loop = true;
       bgm.volume = BGM_VOL_NORMAL;
       bgmRef.current = bgm;
     }
 
     if (!winSERef.current) {
-      const win = new Audio('/sounds/win.mp3');
+      const win = new Audio(
+        '${import.meta.env.BASE_URL}sounds/win.mp3');
       win.volume = WIN_VOL;
       winSERef.current = win;
     }
 
     if (!loseSERef.current) {
-      const lose = new Audio('/sounds/lose.mp3');
+      const lose = new Audio(
+        '${import.meta.env.BASE_URL}/sounds/lose.mp3');
       lose.volume = LOSE_VOL;
       loseSERef.current = lose;
     }
