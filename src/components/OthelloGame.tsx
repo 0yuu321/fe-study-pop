@@ -38,9 +38,6 @@ const BGM_VOL_QUIZ = 0.12;
 const WIN_VOL = 0.8;
 const LOSE_VOL = 0.8;
 
-// 🔊 クイズ正誤SE音量
-const QUIZ_SE_VOL = 0.8;
-
 // ✅ GitHub Pages対応：/fe-study-pop/ を自動で付ける
 const soundUrl = (file: string) => `${import.meta.env.BASE_URL}sounds/${file}`;
 
@@ -75,12 +72,6 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
   const winSERef = useRef<HTMLAudioElement | null>(null);
   const loseSERef = useRef<HTMLAudioElement | null>(null);
 
-  // --------------------
-  // ✅ クイズSE（correct/wrong）
-  // --------------------
-  const correctSERef = useRef<HTMLAudioElement | null>(null);
-  const wrongSERef = useRef<HTMLAudioElement | null>(null);
-
   // 初回だけ生成
   useEffect(() => {
     if (!bgmRef.current) {
@@ -101,29 +92,7 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
       lose.volume = LOSE_VOL;
       loseSERef.current = lose;
     }
-
-    // ✅ クイズ正誤SE
-    if (!correctSERef.current) {
-      const a = new Audio(soundUrl('correct.mp3'));
-      a.volume = QUIZ_SE_VOL;
-      correctSERef.current = a;
-    }
-    if (!wrongSERef.current) {
-      const a = new Audio(soundUrl('wrong.mp3'));
-      a.volume = QUIZ_SE_VOL;
-      wrongSERef.current = a;
-    }
   }, []);
-
-  const playQuizSE = (isCorrect: boolean) => {
-    if (isMuted) return;
-    const a = isCorrect ? correctSERef.current : wrongSERef.current;
-    if (!a) return;
-    try {
-      a.currentTime = 0;
-      void a.play();
-    } catch {}
-  };
 
   // ✅ 再生/停止と音量制御（クイズ中は小さく）
   useEffect(() => {
@@ -235,7 +204,6 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
 
     return () => window.clearTimeout(timer);
 
-    // ✅ ここが重要：isAiThinking は依存に入れない（入れるとタイマーが消える）
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board, currentPlayer, gameMode, gameState, isGameOver]);
 
@@ -288,11 +256,8 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
     setModalOpen(true);
   };
 
-  // クイズ回答後
+  // クイズ回答後（✅ ここでは音を鳴らさない）
   const handleQuizAnswer = (isCorrect: boolean) => {
-    // ✅ ここでSE鳴らす（クリック直後なのでブラウザ的にも安全）
-    playQuizSE(isCorrect);
-
     setModalOpen(false);
 
     if (!isCorrect && currentQuestion) {
@@ -547,7 +512,13 @@ export default function OthelloGame({ onBack }: OthelloGameProps) {
         </footer>
       )}
 
-      <QuizModal isOpen={modalOpen} question={currentQuestion} onAnswer={handleQuizAnswer} />
+      {/* ✅ QuizModal側で「選択肢クリック時」に音を鳴らす */}
+      <QuizModal
+        isOpen={modalOpen}
+        question={currentQuestion}
+        onAnswer={handleQuizAnswer}
+        isMuted={isMuted}
+      />
     </div>
   );
 }

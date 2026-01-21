@@ -6,9 +6,10 @@ interface QuizModalProps {
   question: Question | null;
   onAnswer: (isCorrect: boolean) => void;
   isOpen: boolean;
+  isMuted: boolean; // ✅ 追加
 }
 
-const QuizModal: React.FC<QuizModalProps> = ({ question, onAnswer, isOpen }) => {
+const QuizModal: React.FC<QuizModalProps> = ({ question, onAnswer, isOpen, isMuted }) => {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -16,11 +17,14 @@ const QuizModal: React.FC<QuizModalProps> = ({ question, onAnswer, isOpen }) => 
   const correctSERef = useRef<HTMLAudioElement | null>(null);
   const wrongSERef = useRef<HTMLAudioElement | null>(null);
 
-  // 初回だけ生成（Viteのpublic配下なので /sounds/... でOK）
+  // ✅ GitHub Pages / Vite でも壊れにくい BASE_URL を使う
+  const seBase = import.meta.env.BASE_URL; // 例: "/fe-study-pop/"
+
+  // 初回だけ生成
   useEffect(() => {
-    if (!correctSERef.current) correctSERef.current = new Audio('/sounds/correct.mp3');
-    if (!wrongSERef.current) wrongSERef.current = new Audio('/sounds/wrong.mp3');
-  }, []);
+    if (!correctSERef.current) correctSERef.current = new Audio(`${seBase}sounds/correct.mp3`);
+    if (!wrongSERef.current) wrongSERef.current = new Audio(`${seBase}sounds/wrong.mp3`);
+  }, [seBase]);
 
   useEffect(() => {
     if (isOpen) {
@@ -32,15 +36,15 @@ const QuizModal: React.FC<QuizModalProps> = ({ question, onAnswer, isOpen }) => 
   if (!isOpen || !question) return null;
 
   const playSE = (type: 'correct' | 'wrong') => {
+    if (isMuted) return; // ✅ ミュートなら鳴らさない
+
     const audio = type === 'correct' ? correctSERef.current : wrongSERef.current;
     if (!audio) return;
 
     try {
       audio.currentTime = 0;
       audio.volume = 0.7; // 好みで調整
-      audio.play().catch(() => {
-        // 自動再生制限などで鳴らない場合でも落とさない
-      });
+      void audio.play();
     } catch {
       // 何もしない
     }
@@ -123,11 +127,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ question, onAnswer, isOpen }) => 
         )}
 
         {!isSubmitted && (
-          <button
-            className={styles.submitButton}
-            disabled={selectedOption === null}
-            onClick={handleSubmit}
-          >
+          <button className={styles.submitButton} disabled={selectedOption === null} onClick={handleSubmit}>
             回答する
           </button>
         )}
