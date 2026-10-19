@@ -449,7 +449,37 @@ export default function FeStudyPop({ onBack }: Props) {
                                 : 'その他'}
                             </span>
                           </td>
-                          <td>{dq ? dq.q : id}</td>
+                          <td>
+                            {dq ? (
+                              <details className="review-question">
+                                <summary>{dq.q}</summary>
+                                <div className="review-question-body">
+                                  <div className="muted small">選択肢</div>
+                                  <ol className="review-options">
+                                    {dq.choices.map((choice, index) => (
+                                      <li key={index}>{choice}</li>
+                                    ))}
+                                  </ol>
+                                  <details className="review-answer">
+                                    <summary>答え・解説を見る</summary>
+                                    <div className="review-answer-body">
+                                      <p className="review-correct-answer">
+                                        正解：{dq.answer + 1}. {dq.choices[dq.answer]}
+                                      </p>
+                                      <div className="small muted">解説</div>
+                                      <p>{dq.explain || 'この問題の解説はまだありません。'}</p>
+                                      {dq.mnemonic && (
+                                        <>
+                                          <div className="small muted">覚え方</div>
+                                          <p>{dq.mnemonic}</p>
+                                        </>
+                                      )}
+                                    </div>
+                                  </details>
+                                </div>
+                              </details>
+                            ) : id}
+                          </td>
                           <td>{getAcc(id)}%</td>
                           <td>
                             <button
